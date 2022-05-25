@@ -25,7 +25,7 @@ class Album(models.Model):
 class Song(models.Model):
     name = models.CharField(max_length=100)
     duration = models.TimeField()
-    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='songs')
 
     def __str__(self):
         return f"{self.name}, Album: {self.album_id}"
@@ -33,12 +33,14 @@ class Song(models.Model):
 
 class AlbumReview(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    album_id = models.ForeignKey(Album, on_delete=models.CASCADE)
+    album_id = models.ForeignKey(Album, on_delete=models.CASCADE, related_name='review')
     content = models.CharField(max_length=1000)
     score = models.CharField(help_text="Format 1/10", max_length=5)
+    created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Album {self.album_id}, User: {self.user}, Score: {self.score}"
+        nl = '\n'
+        return f" User: {self.user}, Review: {self.content}, Score: {self.score}, {self.created}"
 
 
 class AlbumReviewComment(models.Model):
